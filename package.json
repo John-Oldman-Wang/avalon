@@ -1,0 +1,41 @@
+{
+  "name": "avalon",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon",
+    "format": "prettier-tslint fix '**/*.ts'",
+    "prettier": "pretty-quick --staged",
+    "tsc": "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nokisnojok/avalon.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nokisnojok/avalon/issues"
+  },
+  "homepage": "https://github.com/nokisnojok/avalon#readme",
+  "dependencies": {
+    "@de-pa/nast": "0.0.3",
+    "@types/koa": "^2.13.4",
+    "injection-js": "^2.4.0",
+    "koa": "^2.13.3",
+    "reflect-metadata": "^0.1.13",
+    "typescript": "^4.4.4"
+  },
+  "devDependencies": {
+    "hooks": "^0.3.2",
+    "husky": "^7.0.2",
+    "nodemon": "^2.0.13",
+    "prettier": "^2.4.1",
+    "prettier-tslint": "^0.4.2",
+    "pretty-quick": "^3.1.1",
+    "ts-node": "^10.3.0",
+    "tslint": "^6.1.3"
+  }
+}
