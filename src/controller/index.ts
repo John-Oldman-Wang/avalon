@@ -1,8 +1,8 @@
-import { Controller } from '@de-pa/nast';
+import { Context, Controller } from '@de-pa/nast';
 
-@Controller()
+@Controller('/api')
 export default class Index {
-    use(ctx) {
+    use(ctx: Context) {
         ctx.body = 'it is avalon';
     }
 }

@@ -1,13 +1,45 @@
 import 'reflect-metadata';
-
+import { Server } from 'http';
 import { Module, create } from '@de-pa/nast';
+import { Injector } from 'injection-js';
+import { WebSocketTransport } from '@colyseus/ws-transport';
 
 import Index from './controller/index';
+import StaticFile from './controller/static';
+import Game from './controller/game';
+import GameServer from './game/server';
+import AvalongRoom from './game/room';
 
 @Module({
-    controllers: [Index],
+    controllers: [StaticFile, Game, Index],
+    providers: [
+        {
+            provide: 'colyseus',
+            useClass: GameServer,
+        },
+        {
+            provide: WebSocketTransport,
+            useFactory: (server) => {
+                return new WebSocketTransport({
+                    server,
+                });
+            },
+            deps: [Server],
+        },
+    ],
 })
-class AppModule {}
+class AppModule {
+    constructor(public inject: Injector) {}
+
+    init() {
+        const s: GameServer = this.inject.get('colyseus');
+        this.initGameServer(s);
+    }
+
+    initGameServer(server) {
+        server.define('avalon', AvalongRoom);
+    }
+}
 
 const app = create(AppModule);
 
