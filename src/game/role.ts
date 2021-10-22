@@ -82,7 +82,7 @@ export default class RoleManager<T> {
         canSeeMap,
     };
     getRole(count: number) {
-        return userCountRoleMap[count];
+        return [...userCountRoleMap[count]];
     }
     canSeeRoles(selfRole: Roles, otherRoles: Array<T & { role: Roles }>): T[] {
         const canSeeRoles = canSeeMap[selfRole];

@@ -7,7 +7,7 @@ import { WebSocketTransport } from '@colyseus/ws-transport';
 import Index from './controller/index';
 import StaticFile from './controller/static';
 import Game from './controller/game';
-import GameServer from './game/server';
+import GameServer from './service/server';
 import AvalongRoom from './game/room';
 
 @Module({

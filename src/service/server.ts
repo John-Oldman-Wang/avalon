@@ -9,11 +9,4 @@ export default class GameServer extends Server {
             transport: webSocketTransport,
         });
     }
-    attachMatchMakingRoutes() {}
-    handleMatch(req, res) {
-        super.handleMatchMakeRequest(req, res);
-        return new Promise((resolve) => {
-            res.on('end', resolve);
-        });
-    }
 }

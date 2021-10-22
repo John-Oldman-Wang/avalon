@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>avalon-梅林练习生</title>
+    <link rel="shortcut icon" href="data:image/ico;base64,AAA" type="image/x-icon">
+    <script type="module" src="https://unpkg.com/colyseus.js@0.14.13/dist/colyseus.js"></script>
+    <style>
+        html,body {
+            margin: 0px;
+            padding: 0px;
+            --text-color-1: hsl(221 50% 15%);
+            --text-color-2: hsl(221 20% 40%);
+        }
+        .root {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background-color: linen;
+        }
+        .buttons {
+            padding: 4px;
+            background-color: mediumturquoise;
+        }
+        .user-list {
+            flex: 1;
+            overflow: hidden;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: repeat(5, 1fr);
+            grid-gap: 4px;
+            padding: 8px 4px 0px;
+        }
+
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+    <script>
+        window.addEventListener('error', (e) => {
+            document.getElementById('root').innerHTML = e.message;
+        });
+    </script>
+    <script type="module" src="./index.js"></script>
+</body>
+</html>

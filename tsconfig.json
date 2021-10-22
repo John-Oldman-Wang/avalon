@@ -11,7 +11,7 @@
     "target": "es2017",
     "sourceMap": true,
     "allowJs": true,
-    "outDir": "dist",
+    "outDir": "app/src",
     "lib": ["es2017", "esnext", "dom", "dom.iterable"],
     "esModuleInterop": true
   },

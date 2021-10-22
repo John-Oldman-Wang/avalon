@@ -6,7 +6,7 @@ import StaticHandler from 'koa-static';
 export default class StaticFile {
     handle: Function;
     constructor() {
-        this.handle = StaticHandler(join(process.cwd(), './dist'));
+        this.handle = StaticHandler(join(__dirname, '../../dist'));
     }
     use(ctx, next) {
         return this.handle(ctx, next);
