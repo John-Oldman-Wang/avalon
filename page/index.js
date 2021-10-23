@@ -49,7 +49,7 @@ async function joinRoom(client, roomName) {
 }
 
 (async () => {
-    const client = (window.client = new Colyseus.Client(`ws://${location.host}`));
+    const client = (window.client = new Colyseus.Client(`${location.protocol.replace('http', 'ws')}//${location.host}`));
 
     const room = (window.room = await joinRoom(client, 'avalon'));
 
