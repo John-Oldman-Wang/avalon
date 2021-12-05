@@ -36,7 +36,7 @@ class AppModule {
         this.initGameServer(s);
     }
 
-    initGameServer(server) {
+    initGameServer(server: GameServer) {
         server.define('avalon', AvalongRoom);
     }
 }

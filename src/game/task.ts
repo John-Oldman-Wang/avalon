@@ -26,9 +26,13 @@ interface Task<T> {
     // 任务成员
     member: T[];
     // 任务投票
-    ticks: boolean[];
+    ticks: Array<
+        UserBase & {
+            tick: boolean;
+        }
+    >;
     // 任务结果
-    result: boolean;
+    result: boolean | 'unknown';
 }
 
 // 任务开始
@@ -44,6 +48,7 @@ export default class TaskManage<User extends UserBase> {
     allTask: Task<User>[] = [];
     currentTask: Task<User>;
     taskCount: number[];
+    end: boolean = false;
 
     constructor(public roles: User[]) {
         this.init();
@@ -66,6 +71,7 @@ export default class TaskManage<User extends UserBase> {
         };
 
         return {
+            end: this.end,
             allTask,
             currentTask,
         };
@@ -76,7 +82,17 @@ export default class TaskManage<User extends UserBase> {
     }
 
     isEnd() {
-        return this.sendTaskCount === 5;
+        const successCount = this.allTask.filter((item) => item.result === true);
+
+        const failCount = this.allTask.filter((item) => item.result === false);
+
+        if (successCount.length !== 3 && failCount.length !== 3 && this.sendTaskCount !== 5) {
+            return false;
+        }
+
+        this.end = true;
+        // 失败三局 或者 成功三局 或者 发车五局
+        return true;
     }
 
     setMember(selfId: string, selectIds: string[]) {
@@ -119,17 +135,44 @@ export default class TaskManage<User extends UserBase> {
         if (this.currentTask.votes.length === this.roles.length) {
             // todo 判断是否发车
             const canSend = this.currentTask.votes.filter((item) => item.vote).length > this.roles.length / 2;
+            this.currentTask.isSend = !!canSend;
             if (canSend) {
+                // 发车成功
                 this.currentTask.isSend = true;
             } else {
-                // this.currentTask.
+                // 开始下一个任务 或者游戏结束
+                this.next();
             }
         }
         return true;
     }
 
+    setTick(id: string, tick: boolean) {
+        const hasTick = this.currentTask.ticks.find((item) => item.id === id);
+
+        if (this.currentTask.member.length === 0) {
+            return false;
+        }
+        if (!!hasTick) {
+            return false;
+        }
+        this.currentTask.ticks.push({
+            id,
+            tick,
+        });
+
+        if (this.currentTask.ticks.length === this.currentTask.member.length) {
+            // 投票完成记录结果
+            this.currentTask.result = this.isTaskSuccess(this.currentTask);
+            // 开始下一个任务 或者游戏结束
+            this.next();
+        }
+
+        return true;
+    }
+
     getNextMaster() {
-        // 倒数2个master
+        // 倒数2个master 随机车长
         const lastestMasters = this.allTaskMaster.slice(-2);
         const notLastestMasters = this.roles.filter((item) => !lastestMasters.includes(item));
         const random = Math.floor(Math.random() * notLastestMasters.length);
@@ -147,13 +190,14 @@ export default class TaskManage<User extends UserBase> {
             votes: [],
             ticks: [],
             isSend: false,
-            result: false,
+            result: 'unknown',
         };
         this.currentTask = task;
         this.allTask.push(this.currentTask);
     }
 
     next() {
+        console.log('do next');
         if (!this.isEnd()) {
             this.nextTask();
         }
@@ -166,12 +210,11 @@ export default class TaskManage<User extends UserBase> {
         return this.roleCount >= 7 && this.sendTaskCount === 3;
     }
 
-    // todo return boolean
     isTaskSuccess(task: Task<User>): boolean {
         if (!task.isSend) {
             return false;
         }
-        const failTicks = task.ticks.filter((item) => item === false);
+        const failTicks = task.ticks.filter((item) => item.tick === false);
         const isProtected = this.isProtected();
 
         // 保护局大于1张 就是2张 非保护局 大于0 就是1张

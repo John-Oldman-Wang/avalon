@@ -20,10 +20,18 @@ class TickPannel extends LitElement {
             }
         `;
     }
+    handleSubmit(tick) {
+        const event = new CustomEvent('tick-submit', {
+            detail: {
+                tick,
+            },
+        });
+        this.dispatchEvent(event);
+    }
     render() {
         return html`<div class="root">
-            <button>成功</button>
-            <button>失败</button>
+            <button @click="${() => this.handleSubmit(true)}">成功</button>
+            <button @click="${() => this.handleSubmit(false)}">失败</button>
         </div>`;
     }
 }

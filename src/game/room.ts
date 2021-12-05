@@ -83,6 +83,9 @@ export default class AvalongRoom extends Room<GameState> {
         const taskStatus = this.taskM.getStauts();
         this.state.allTask = JSON.stringify(taskStatus.allTask);
         this.state.currentTask = JSON.stringify(taskStatus.currentTask);
+        if (this.taskM.isEnd()) {
+            this.broadcast('game-end');
+        }
     }
 
     assignRoles() {
@@ -153,6 +156,13 @@ export default class AvalongRoom extends Room<GameState> {
                 this.updateTaskStatus();
             }
         }
+        if (message.type === 'tick-submit') {
+            const { id, tick } = message.data;
+            const result = this.taskM.setTick(id, tick);
+            if (result) {
+                this.updateTaskStatus();
+            }
+        }
     }
 
     onAuth(client, option) {
@@ -188,7 +198,7 @@ export default class AvalongRoom extends Room<GameState> {
             }
 
             // allow disconnected client to reconnect into this room until 20 seconds
-            await this.allowReconnection(client);
+            await this.allowReconnection(client, 5 * 60 * 60);
 
             // client returned! let's re-activate it.
             this.state.users.get(client.sessionId).connected = true;

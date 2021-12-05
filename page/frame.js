@@ -54,7 +54,7 @@ class Frame {
         const noMember = !currentTask.member || currentTask.member.length === 0;
 
         return selfIsMaster && noMember
-            ? html`<member-select @member-submit="${(e) => this.handleMemBerSubmit(e)}" .users="${users}" max="${2}"></member-select>`
+            ? html`<member-select @member-submit="${(e) => this.handleMemBerSubmit(e)}" .users="${users}" max="${currentTask.count}"></member-select>`
             : html``;
     }
 
@@ -89,6 +89,40 @@ class Frame {
         }
 
         return html``;
+    }
+
+    handleTickSubmit(e) {
+        const tick = e.detail.tick;
+        const selfID = this.game.self.id;
+        this.game.room.send('action', {
+            type: 'tick-submit',
+            data: {
+                id: selfID,
+                tick,
+            },
+        });
+    }
+
+    renderTick() {
+        const state = this.game.room.state;
+        const taskStatus = this.game.getTaskStatus();
+        const currentTask = taskStatus.currentTask;
+        const selfId = this.game.self.id;
+
+        // 不同发车 就展示成功失败投票
+        if (!currentTask.isSend) {
+            return;
+        }
+        // 如果车上没有自己不展示成功失败投票
+        if (!currentTask.member.map((item) => item.id).includes(selfId)) {
+            return;
+        }
+        // 如果已经投票也不展示
+        if (currentTask.ticks.findIndex((item) => item.id === selfId) > -1) {
+            return;
+        }
+
+        return html`<tick-pannel @tick-submit="${(e) => this.handleTickSubmit(e)}"></tick-pannel>`;
     }
 
     userTemplate() {
@@ -129,8 +163,7 @@ class Frame {
                     ></user-info>`;
                 })}
             </div>
-            <tick-pannel></tick-pannel>
-            ${this.renderMemberSelect()}${this.renderVote()}
+            ${this.renderMemberSelect()}${this.renderVote()}${this.renderTick()}
         </div>`;
     }
 

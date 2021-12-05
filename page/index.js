@@ -5,12 +5,12 @@ const rootEle = document.getElementById('root');
 const urp = new URLSearchParams(location.search);
 
 function setRoomInfo(info) {
-    localStorage.setItem('room_info', JSON.stringify(info));
+    sessionStorage.setItem('room_info', JSON.stringify(info));
 }
 
 function getRoomInfo() {
     try {
-        return JSON.parse(localStorage.getItem('room_info'));
+        return JSON.parse(sessionStorage.getItem('room_info'));
     } catch (error) {
         return null;
     }
